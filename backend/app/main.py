@@ -17,8 +17,11 @@ def index():
     return {"message": "Hello World"}
 
 @api.get("/todos")
-async def get_todo():
-    return all_todos
+async def get_todo(first_n: int = None):
+    if first_n: #if first_n has value
+        return all_todos[:first_n]
+    else:
+        return all_todos
 
 @api.get("/todos/{todo_id}")
 async def get_todo(todo_id: int):
@@ -26,3 +29,15 @@ async def get_todo(todo_id: int):
         if todo["todo_id"] == todo_id:
             return {"result": todo}
     return {"error": "Todo not found"}
+
+@api.post("/todos")
+async def create_todo(todo: dict):
+    new_todo_id = max(t["todo_id"] for t in all_todos) + 1
+    new_todo = {
+        "todo_id": new_todo_id,
+        "todo_name": todo["todo_name"],
+        "todo_description": todo["todo_description"]
+    }
+    all_todos.append(new_todo)
+    return {"result": new_todo}
+
