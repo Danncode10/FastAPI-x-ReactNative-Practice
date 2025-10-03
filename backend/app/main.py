@@ -41,3 +41,11 @@ async def create_todo(todo: dict):
     all_todos.append(new_todo)
     return {"result": new_todo}
 
+@api.put("/todos/{todo_id}")
+def update_todo(todo_id: int, updated_todo: dict):
+    for todo in all_todos:
+        if todo["todo_id"] == todo_id:
+            todo["todo_name"] = updated_todo["todo_name"]
+            todo["todo_description"] = updated_todo["todo_description"]
+            return {"result": todo}
+    return {"error": "Todo not found"}
